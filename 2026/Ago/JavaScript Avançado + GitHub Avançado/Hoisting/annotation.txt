@@ -1,0 +1,24 @@
+# JavaScript - Hoisting
+
+## O que é Hoisting?
+
+Hoisting é o comportamento do JavaScript de mover **declarações** de variáveis e funções para o topo do seu escopo durante a fase de compilação.
+
+> Importante: apenas as **declarações** são elevadas, não as inicializações.
+
+## Funciona com:
+
+- ✅ `var`
+- ✅ **Function Declaration**
+
+## Não funciona com:
+
+- ❌ `let`
+- ❌ `const`
+- ❌ Function Expression
+- ❌ Arrow Function
+
+### Referência
+https://www.youtube.com/watch?v=i1msQOvoz1A
+
+https://www.youtube.com/watch?v=MPdw7GwHc7A
