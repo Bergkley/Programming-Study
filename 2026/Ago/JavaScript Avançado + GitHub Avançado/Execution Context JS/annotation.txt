@@ -1,0 +1,23 @@
+# JavaScript Contexto de Execução
+
+### Call Stack (Pilha de Chamados)
+
+É uma pilha que controla a ordem de execução das funções. Quando uma função é chamada, ela entra na pilha. Quando termina, ela sai da pilha. A última função que entra é a primeira que sai.
+
+### Contexto de Execução (Execution Context)
+
+É o ambiente criado pelo JavaScript para executar um código (global ou uma função). Cada função chamada cria seu próprio contexto de execução, onde ficam suas variáveis, parâmetros e outras informações necessárias para funcionar.
+
+### `this` no Contexto de Execução
+
+Todo contexto de execução possui um valor para `this`. O valor de `this` depende de como a função foi chamada. No contexto global do navegador, `this` normalmente aponta para o objeto `window`.
+
+### Ambiente Léxico (Lexical Environment)
+
+É o lugar onde o JavaScript guarda as variáveis e funções de um contexto. Também mantém uma referência ao ambiente externo, permitindo que uma função acesse variáveis declaradas fora dela, seguindo a cadeia de escopos.
+
+
+### Referência
+https://www.youtube.com/watch?v=k8SAA979zAk
+
+https://www.youtube.com/watch?v=MwHAeAzqVR0
