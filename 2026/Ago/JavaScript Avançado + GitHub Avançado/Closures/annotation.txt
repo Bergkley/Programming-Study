@@ -1,0 +1,10 @@
+### Closures
+
+- Definição: Uma closure é uma função que mantém acesso/referência  às variáveis do escopo em que foi criada, mesmo após esse escopo já ter sido finalizado.
+
+
+### Referência
+
+https://www.youtube.com/watch?v=Tr_fjFTK7wI
+
+https://www.youtube.com/watch?v=l32Q7FRvwAQ
