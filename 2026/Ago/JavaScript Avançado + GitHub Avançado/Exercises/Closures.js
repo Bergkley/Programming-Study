@@ -802,6 +802,27 @@ soma(); //0.123
 
 // ===============================================
 
+function once(fn) {
+    let executed = false
+    let result = 0
+
+    return function (...args) {
+
+        if (!executed) {
+            result = fn(args)
+            executed = true
+        }
+        return result
+    }
+}
+
+const soma = once(() => Math.random());
+
+console.log(soma());
+
+console.log(soma());
+
+console.log(soma()); 
 
 
 
@@ -838,7 +859,28 @@ soma(3,4);
 // ===============================================
 
 
+function memoize(fn) {
+    let memory = {}
 
+    return function (...args) {
+        const key = JSON.stringify(args);
+
+
+        if (key in memory) {
+            return `${memory[key]} cache`
+        }
+        const result = fn(...args)
+        memory[key] = result
+        return `${result} calculado`
+    }
+
+}
+
+const soma = memoize((a, b) => a + b);
+console.log(soma(1, 2))
+console.log(soma(1, 2))
+console.log(soma(3, 4))
+console.log(soma(3, 4))
 
 /*
 =================================================
@@ -874,6 +916,50 @@ eventos.emit("login", "Lucas");
 // ===============================================
 
 
+function eventEmitter() {
+    const events = {};
+
+    return {
+        on(event, callback) {
+            if (!events[event]) {
+                events[event] = [];
+            }
+            events[event].push(callback);
+        },
+
+        emit(event, data) {
+            if (!events[event]) return;
+
+            for (let i = 0; i < events[event].length; i++) {
+                const callback = events[event][i];
+                console.log('callback All', callback);
+                callback(data);
+            }
+        },
+
+        off(event, callback) {
+            if (!events[event]) return;
+
+            events[event] = events[event].filter(cb => cb !== callback);
+        }
+    };
+}
+
+
+const eventManager = eventEmitter();
+
+function onLogin(user) {
+    console.log(`Welcome, ${user}!`);
+    console.log(`Welcome2, ${user}!`);
+}
+
+eventManager.on("login", onLogin);
+
+eventManager.emit("login", "Lucas");
+
+eventManager.off("login", onLogin);
+
+eventManager.emit("login", "Maria");
 
 
 /*
@@ -905,6 +991,51 @@ fora da função.
 
 // ===============================================
 
+function store() {
+    let products = []
+    return {
+        add(name, price) {
+            products.push({ name, price })
+        },
+        remove(name) {
+            products = products.filter(product => product.name !== name)
+        },
+        list() {
+            return products
+
+        },
+        total() {
+            return products.reduce((total, product) => total + product.price, 0);
+        },
+        clear() {
+            products = []
+        },
+    }
+}
+
+
+
+
+const myStore = store();
+
+myStore.add("Notebook", 3500);
+myStore.add("Mouse", 80);
+myStore.add("Teclado", 150);
+
+console.log(myStore.list());
+
+
+console.log(myStore.total());
+
+myStore.remove("Mouse");
+
+console.log(myStore.list());
+
+console.log(myStore.total());
+
+myStore.clear();
+
+console.log(myStore.list());
 
 
 
@@ -916,15 +1047,22 @@ BÔNUS
 Explique com suas palavras:
 
 1. O que é uma closure?
+R: Uma closure é uma função que mantém acesso às variáveis do escopo onde foi criada, mesmo depois que esse escopo já tenha sido finalizado.
 
 2. Por que closures conseguem "lembrar"
    de variáveis mesmo após a função terminar?
+R: Porque a closure mantém uma referência ao ambiente (escopo) em que foi criada, permitindo acessar as variáveis desse ambiente mesmo após a execução da função externa ter terminado.
 
 3. Quais as vantagens de usar closures?
-
-4. Cite 3 exemplos reais onde closures são usadas.
-
-5. Qual a diferença entre variável global,
+R: As vantagens de usar closures incluem:
+- Encapsulamento: Permite criar variáveis privadas, protegendo-as de acesso externo.
+- Persistência de estado: Mantém o estado entre chamadas de função, útil para contadores, caches e geradores de IDs.
+- Modularidade: Facilita a criação de funções reutilizáveis e modulares, promovendo um código mais limpo e organizado.
+4. Qual a diferença entre variável global,
    local e privada usando closure?
+R:
+- Variável global: É declarada fora de qualquer função ou bloco, acessível em todo o código.
+- Variável local: É declarada dentro de uma função ou bloco, acessível apenas dentro desse escopo.
+- Variável privada usando closure: É declarada dentro de uma função e acessível apenas pelas funções internas (closures) que a referenciam, mantendo seu estado mesmo após a função externa ter sido executada.
 =================================================
 */
