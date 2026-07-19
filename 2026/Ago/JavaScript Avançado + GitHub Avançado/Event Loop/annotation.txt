@@ -1,0 +1,83 @@
+# JavaScript Event Loop
+
+## O que é o Event Loop?
+
+O **Event Loop** é o mecanismo responsável por coordenar a execução do código JavaScript, permitindo que operações assíncronas (como requisições HTTP, `setTimeout` e eventos do navegador) sejam executadas sem bloquear a *thread* principal.
+
+Embora o JavaScript seja **single-threaded** (executa uma instrução por vez), o Event Loop trabalha em conjunto com a **Call Stack**, as **Web APIs** (ou APIs do ambiente de execução, como Node.js) e as **Filas de Tarefas (Task Queue e Microtask Queue)** para gerenciar a execução de tarefas assíncronas.
+
+## Como funciona?
+
+O fluxo básico é o seguinte:
+
+1. O código é executado na **Call Stack**.
+2. Operações assíncronas são delegadas para as APIs do ambiente (Browser APIs ou Node.js APIs).
+3. Quando a operação termina, seu callback é colocado em uma fila:
+   - **Microtask Queue**: `Promise.then`, `catch`, `finally`, `queueMicrotask`, `MutationObserver`.
+   - **Task Queue (Macrotask Queue)**: `setTimeout`, `setInterval`, eventos de usuário, I/O.
+4. O Event Loop verifica se a **Call Stack** está vazia.
+5. Se estiver vazia:
+   - Executa todas as **Microtasks** pendentes.
+   - Em seguida, executa uma tarefa da **Task Queue**.
+6. O processo se repete continuamente.
+
+## Ordem de prioridade
+
+```
+Call Stack
+    ↓
+Microtask Queue
+    ↓
+Task Queue (Macrotasks)
+```
+
+## Exemplo
+
+```javascript
+console.log("Início");
+
+setTimeout(() => {
+  console.log("setTimeout");
+}, 0);
+
+Promise.resolve().then(() => {
+  console.log("Promise");
+});
+
+console.log("Fim");
+```
+
+### Saída
+
+```
+Início
+Fim
+Promise
+setTimeout
+```
+
+### Explicação
+
+- `console.log("Início")` é executado imediatamente.
+- O `setTimeout` é enviado para as APIs do ambiente.
+- A `Promise` é resolvida e seu callback entra na **Microtask Queue**.
+- `console.log("Fim")` é executado.
+- A Call Stack fica vazia.
+- O Event Loop executa primeiro as **Microtasks** (`Promise`).
+- Depois executa a **Task Queue** (`setTimeout`).
+
+## Componentes envolvidos
+
+- **Call Stack**: executa as funções.
+- **Web APIs / Node.js APIs**: executam operações assíncronas.
+- **Microtask Queue**: possui prioridade sobre a Task Queue.
+- **Task Queue (Macrotask Queue)**: armazena callbacks de timers, eventos e I/O.
+- **Event Loop**: coordena quando cada fila deve ser processada.
+
+## Resumo
+
+O Event Loop é o mecanismo que torna possível a programação assíncrona em JavaScript. Ele monitora a **Call Stack** e, sempre que ela fica vazia, processa primeiro as **Microtasks** e depois as **Tasks**, garantindo que o código seja executado de forma eficiente e sem bloquear a aplicação.
+
+## Referências
+
+- https://www.youtube.com/watch?v=ndZNQSQpSys
