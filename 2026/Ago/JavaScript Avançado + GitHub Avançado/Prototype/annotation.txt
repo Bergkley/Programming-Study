@@ -1,0 +1,49 @@
+# JavaScript - Prototype
+
+## O que é Prototype?
+
+Em JavaScript, **Prototype** é o mecanismo que permite que um objeto herde propriedades e métodos de outro objeto. Essa herança acontece por meio da **Prototype Chain** (cadeia de protótipos).
+
+Quando tentamos acessar uma propriedade ou método em um objeto, o JavaScript segue a seguinte ordem:
+
+1. Verifica se a propriedade existe no próprio objeto.
+2. Se não existir, procura no seu **prototype**.
+3. Se ainda não encontrar, continua procurando nos prototypes superiores da cadeia até chegar em `Object.prototype`.
+4. Se a propriedade não existir em nenhum nível da cadeia, o resultado será `undefined`.
+
+## Exemplo
+
+Considere um array:
+
+```javascript
+const numeros = [1, 2, 3];
+
+numeros.push(4);
+```
+
+O objeto `numeros` não possui o método `push` diretamente.
+
+Quando executamos:
+
+```javascript
+numeros.push(4);
+```
+
+O JavaScript faz a seguinte busca:
+
+```
+numeros
+   ↓
+Array.prototype
+   ↓
+Object.prototype
+   ↓
+null
+```
+
+* Primeiro, verifica se `push` existe em `numeros`.
+* Como não existe, procura em `Array.prototype`.
+* Encontra o método `push` e o executa.
+* Se não encontrasse em `Array.prototype`, continuaria procurando em `Object.prototype`.
+
+Essa busca por propriedades e métodos é chamada de **Prototype Chain** (cadeia de protótipos).
