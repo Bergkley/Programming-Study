@@ -1,0 +1,27 @@
+Macro-Task Queue (Task Queue)
+
+A Macro Task Queue armazena tarefas assíncronas maiores que aguardam para serem executadas pelo JavaScript.
+
+Exemplos de Macro Tasks:
+
+setTimeout;
+setInterval;
+Eventos do navegador;
+Algumas operações de rede.
+
+Essas tarefas são executadas uma por vez, seguindo a ordem em que foram adicionadas à fila.
+
+Micro-Task Queue
+
+A Micro Task Queue possui prioridade maior que a Macro Task Queue.
+
+Ela armazena tarefas pequenas que precisam ser executadas assim que o código síncrono termina.
+
+Exemplos de Micro Tasks:
+
+Promise.then();
+Promise.catch();
+async/await;
+queueMicrotask().
+
+Antes de executar uma nova Macro Task, o JavaScript sempre verifica se existem Micro Tasks pendentes.
