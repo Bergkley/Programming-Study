@@ -1,0 +1,89 @@
+Estrutura do JavaScript Runtime
+
+O JavaScript Runtime é o ambiente responsável por executar códigos JavaScript. Ele é composto por diferentes partes que trabalham juntas para controlar a execução do código, lidar com tarefas assíncronas e atualizar a interface da aplicação.
+
+JavaScript Engine
+
+A JavaScript Engine é o motor responsável por interpretar e executar o código JavaScript. Ela possui principalmente duas áreas importantes:
+
+Heap
+É uma região de memória onde são armazenados objetos, variáveis e funções que precisam existir durante a execução do programa.
+A alocação e liberação de memória são gerenciadas automaticamente pelo Garbage Collector.
+Call Stack
+É a estrutura responsável por controlar a execução das funções em JavaScript.
+Funciona seguindo o conceito LIFO (Last In, First Out): a última função adicionada à pilha é a primeira a ser executada.
+O JavaScript executa o código de forma single-threaded, ou seja, possui uma única pilha principal de execução.
+Web APIs
+
+As Web APIs são recursos fornecidos pelo ambiente de execução (principalmente pelos navegadores) que permitem ao JavaScript interagir com funcionalidades externas ao motor da linguagem.
+
+Elas fornecem APIs para trabalhar com recursos como:
+
+Manipulação do DOM;
+Requisições HTTP (fetch);
+Temporizadores (setTimeout, setInterval);
+Eventos do navegador;
+Armazenamento local (localStorage).
+
+Quando uma operação assíncrona é iniciada, ela pode ser delegada para uma Web API enquanto o JavaScript continua executando outras tarefas.
+
+Macro Task Queue (Task Queue)
+
+A Macro Task Queue armazena tarefas assíncronas maiores que aguardam para serem executadas pelo JavaScript.
+
+Exemplos de Macro Tasks:
+
+setTimeout;
+setInterval;
+Eventos do navegador;
+Algumas operações de rede.
+
+Essas tarefas são executadas uma por vez, seguindo a ordem em que foram adicionadas à fila.
+
+Micro-Task Queue
+
+A Micro Task Queue possui prioridade maior que a Macro Task Queue.
+
+Ela armazena tarefas pequenas que precisam ser executadas assim que o código síncrono termina.
+
+Exemplos de Micro Tasks:
+
+Promise.then();
+Promise.catch();
+async/await;
+queueMicrotask().
+
+Antes de executar uma nova Macro Task, o JavaScript sempre verifica se existem Micro Tasks pendentes.
+
+Event Loop
+
+O Event Loop é o mecanismo responsável por coordenar a execução do código síncrono e assíncrono no JavaScript.
+
+Ele monitora a Call Stack, as Micro Task Queue e a Macro Task Queue, garantindo que as tarefas sejam executadas no momento correto.
+
+O ciclo de execução pode ser dividido em etapas:
+
+1. Evaluate Script
+O JavaScript inicia a execução do código.
+Nessa etapa, tudo que é síncrono é executado diretamente na Call Stack.
+2. Run All Micro Tasks
+Após finalizar o código síncrono, o Event Loop executa todas as tarefas presentes na Micro Task Queue.
+A fila de Micro Tasks precisa ser completamente esvaziada antes de continuar.
+3. Run a Macro Task
+O Event Loop seleciona a próxima tarefa da Macro Task Queue e executa apenas uma por ciclo.
+Depois da execução dessa tarefa, ele verifica novamente se existem Micro Tasks pendentes.
+4. Re-render
+O navegador pode realizar uma atualização da interface (renderização da tela).
+Esse processo atualiza alterações visuais feitas no DOM.
+Fluxo simplificado de execução
+Código Síncrono
+        ↓
+Call Stack
+        ↓
+Micro Task Queue
+        ↓
+Macro Task Queue
+        ↓
+Renderização da Tela
+        ↓
+Novo ciclo do Event Loop
