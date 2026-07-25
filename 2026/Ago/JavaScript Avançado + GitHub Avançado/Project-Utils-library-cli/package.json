@@ -1,0 +1,24 @@
+{
+  "name": "utils-library-cli",
+  "version": "1.0.0",
+  "description": "JavaScript utility library with CLI",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "utils": "./bin/cli.js"
+  },
+  "scripts": {
+    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js",
+    "start": "node bin/cli.js"
+  },
+  "keywords": [
+    "javascript",
+    "utils",
+    "cli"
+  ],
+  "author": "Bergkley Brasil",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^30.0.0"
+  }
+}
