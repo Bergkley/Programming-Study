@@ -25,6 +25,6 @@ Comandos:
 
 node bin/cli.js  sum 5 3
 node bin/cli.js  capitalize joao
-node bin/cli.js  reverse chatgpt
+node bin/cli.js  reverse berg
 `);
 }
