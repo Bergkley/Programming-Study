@@ -47,3 +47,7 @@ null
 * Se não encontrasse em `Array.prototype`, continuaria procurando em `Object.prototype`.
 
 Essa busca por propriedades e métodos é chamada de **Prototype Chain** (cadeia de protótipos).
+
+
+### Referência:
+https://www.youtube.com/watch?v=waOO3KxLohk
