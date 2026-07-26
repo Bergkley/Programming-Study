@@ -185,6 +185,449 @@ async function buscarTudo() {
 
 ---
 
+# Big O Notation
+
+# JavaScript Avançado
+
+# Big O Notation
+
+A **Big O Notation (Notação Big O)** é uma forma de medir a **complexidade de um algoritmo**, indicando como seu tempo de execução ou consumo de memória cresce conforme a quantidade de dados aumenta.
+
+Ela **não mede exatamente quantos segundos um algoritmo demora**, mas sim **como ele escala** quando o volume de dados aumenta.
+
+A Notação Big O é amplamente utilizada para comparar algoritmos e escolher a solução mais eficiente para um determinado problema.
+
+---
+
+# Por que aprender Big O?
+
+Imagine que você possui um algoritmo que funciona muito bem com 100 registros.
+
+Mas e se o sistema passar a processar:
+
+- 1.000 registros?
+- 100.000 registros?
+- 10 milhões de registros?
+
+Um algoritmo ineficiente pode deixar uma aplicação lenta, consumir muita memória e até tornar o sistema inutilizável.
+
+A Big O ajuda justamente a prever esse comportamento.
+
+---
+
+# Complexidade de Tempo x Complexidade de Espaço
+
+Existem dois tipos principais de análise.
+
+## Complexidade de Tempo
+
+Mede **quanto o tempo de execução aumenta para executar uma tarefa** conforme a entrada cresce.
+
+Exemplo:
+
+```javascript
+const numeros = [1, 2, 3, 4, 5];
+
+for (const numero of numeros) {
+  console.log(numero);
+}
+```
+
+Quanto maior o array, mais iterações serão realizadas.
+
+---
+
+## Complexidade de Espaço
+
+Mede **quanto de memória é consumida para poder executar essa tarefa** o algoritmo precisa.
+
+Exemplo:
+
+```javascript
+function copiarArray(array) {
+  const copia = [];
+
+  for (const item of array) {
+    copia.push(item);
+  }
+
+  return copia;
+}
+```
+
+Quanto maior o array original, maior será o espaço ocupado pela cópia.
+
+---
+
+# Principais complexidades
+
+## O(1) — Constante
+
+O algoritmo sempre executa praticamente a mesma quantidade de operações, independentemente do tamanho da entrada.
+
+```javascript
+const numeros = [10, 20, 30, 40];
+
+console.log(numeros[0]);
+```
+
+Mesmo que o array tenha milhões de elementos, acessar um índice específico continua sendo uma operação constante.
+
+```
+Entrada
+
+10
+100
+1000
+100000
+
+Tempo
+
+█
+█
+█
+█
+```
+
+✅ Excelente desempenho.
+
+---
+
+## O(log n) — Logarítmica
+
+A cada passo, metade dos dados é descartada.
+
+O exemplo clássico é a **Busca Binária (Binary Search)**.
+
+Imagine procurar um número em um array ordenado:
+
+```
+1 2 3 4 5 6 7 8 9 10
+```
+
+Você verifica o elemento do meio.
+
+Se o número procurado for maior, elimina toda a metade esquerda.
+
+Depois faz o mesmo novamente.
+
+A quantidade de verificações cresce muito lentamente.
+
+```
+1024 elementos
+
+↓
+
+512
+
+↓
+
+256
+
+↓
+
+128
+
+↓
+
+64
+```
+
+Esse crescimento é muito eficiente.
+
+---
+
+## O(n) — Linear
+
+O número de operações cresce proporcionalmente à quantidade de elementos.
+
+```javascript
+const numeros = [1, 2, 3, 4];
+
+for (const numero of numeros) {
+  console.log(numero);
+}
+```
+
+Se o array dobrar de tamanho, o número de iterações também dobra.
+
+```
+10 elementos → 10 operações
+
+100 elementos → 100 operações
+
+1000 elementos → 1000 operações
+```
+
+---
+
+## O(n log n)
+
+É muito comum em algoritmos eficientes de ordenação, como:
+
+- Merge Sort
+- Heap Sort
+- Quick Sort (caso médio)
+
+Exemplo:
+
+```javascript
+const numeros = [4, 2, 7, 1];
+
+numeros.sort((a, b) => a - b);
+```
+
+Embora a implementação interna do `sort()` varie conforme o mecanismo JavaScript (V8, SpiderMonkey, JavaScriptCore etc.), algoritmos de ordenação eficientes costumam apresentar complexidade média de **O(n log n)**.
+
+---
+
+## O(n²) — Quadrática
+
+Ocorre quando existe um laço dentro de outro.
+
+```javascript
+const numeros = [1, 2, 3];
+
+for (const a of numeros) {
+  for (const b of numeros) {
+    console.log(a, b);
+  }
+}
+```
+
+Quantidade de operações:
+
+```
+3 elementos → 9 operações
+
+10 elementos → 100 operações
+
+100 elementos → 10.000 operações
+```
+
+Esse crescimento acontece muito rapidamente.
+
+---
+
+## O(2ⁿ) — Exponencial
+
+Cada novo elemento praticamente dobra o trabalho realizado.
+
+Exemplo clássico:
+
+```javascript
+function fibonacci(n) {
+  if (n <= 1) return n;
+
+  return fibonacci(n - 1) + fibonacci(n - 2);
+}
+```
+
+Para valores pequenos funciona bem.
+
+Para valores maiores, o número de chamadas cresce exponencialmente.
+
+---
+
+## O(n!)
+
+É uma das piores complexidades.
+
+Aparece em problemas envolvendo todas as permutações possíveis.
+
+Exemplo:
+
+```javascript
+function permutacoes(array) {
+  // gera todas as permutações
+}
+```
+
+Quantidade aproximada:
+
+```
+5 elementos → 120 possibilidades
+
+10 elementos → 3.628.800 possibilidades
+```
+
+---
+
+# Comparando as complexidades
+
+| Complexidade | Nome | Desempenho |
+|---------------|------|------------|
+| **O(1)** | Constante | ⭐ Excelente |
+| **O(log n)** | Logarítmica | ⭐ Excelente |
+| **O(n)** | Linear | ✅ Boa |
+| **O(n log n)** | Linearítmica | ✅ Boa |
+| **O(n²)** | Quadrática | ⚠️ Pode ficar lenta |
+| **O(2ⁿ)** | Exponencial | ❌ Muito lenta |
+| **O(n!)** | Fatorial | ❌ Extremamente lenta |
+
+---
+
+# Comparação visual
+
+```
+Tempo
+^
+
+|
+|                                   O(n!)
+|                              *
+|                           *
+|                        *
+|                    O(2ⁿ)
+|                 *
+|              *
+|          O(n²)
+|        *
+|      *
+|    O(n log n)
+|   *
+|  O(n)
+| *
+|O(log n)
+|______________________________> Entrada
+ O(1)
+```
+
+Quanto mais "reta" for a curva, melhor o algoritmo escala.
+
+---
+
+# Exemplos do dia a dia em JavaScript
+
+## Acesso a um índice
+
+```javascript
+const frutas = ["Maçã", "Banana", "Uva"];
+
+console.log(frutas[2]);
+```
+
+Complexidade:
+
+```
+O(1)
+```
+
+---
+
+## Procurando um elemento
+
+```javascript
+const frutas = ["Maçã", "Banana", "Uva"];
+
+frutas.includes("Uva");
+```
+
+No pior caso, será necessário percorrer todo o array.
+
+```
+O(n)
+```
+
+---
+
+## Encontrando um objeto
+
+```javascript
+const usuarios = [
+  { id: 1 },
+  { id: 2 },
+  { id: 3 },
+];
+
+usuarios.find((usuario) => usuario.id === 3);
+```
+
+Também possui complexidade linear.
+
+```
+O(n)
+```
+
+---
+
+## Dois loops
+
+```javascript
+for (const usuario of usuarios) {
+  for (const pedido of pedidos) {
+    console.log(usuario, pedido);
+  }
+}
+```
+
+Complexidade:
+
+```
+O(n²)
+```
+
+---
+
+# Dicas para melhorar a performance
+
+- Evite loops aninhados quando possível.
+- Utilize estruturas de dados adequadas, como `Map` e `Set`, para buscas rápidas.
+- Evite recalcular valores que podem ser armazenados em cache.
+- Escolha algoritmos eficientes para ordenação e busca.
+- Meça o desempenho apenas quando houver necessidade; nem sempre o algoritmo mais complexo é um problema em conjuntos de dados pequenos.
+
+---
+
+# Mito comum
+
+> **"Big O mede o tempo em segundos."**
+
+Isso é um mito.
+
+A Big O mede **como o algoritmo cresce** em relação ao tamanho da entrada, não o tempo exato de execução.
+
+Dois algoritmos com complexidade **O(n)** podem ter tempos diferentes, mas ambos crescem de forma proporcional ao aumento dos dados.
+
+---
+
+# Resumo
+
+| Complexidade | Exemplo em JavaScript |
+|---------------|----------------------|
+| **O(1)** | `array[0]` |
+| **O(log n)** | Busca binária |
+| **O(n)** | `find()`, `includes()`, `for` |
+| **O(n log n)** | Algoritmos eficientes de ordenação |
+| **O(n²)** | Dois `for` aninhados |
+| **O(2ⁿ)** | Fibonacci recursivo ingênuo |
+| **O(n!)** | Permutações |
+
+---
+
+# Quando se preocupar?
+
+Nem todo algoritmo precisa ser otimizado.
+
+Em muitos casos:
+
+- Um algoritmo `O(n)` é suficiente.
+- Um `O(n²)` pode ser aceitável para poucos elementos.
+- A legibilidade do código pode ser mais importante do que uma pequena otimização.
+
+O ideal é buscar um equilíbrio entre **clareza**, **manutenibilidade** e **performance**.
+
+---
+
+# Referências
+
+- Documentação MDN - Performance: https://developer.mozilla.org/pt-BR/docs/Web/Performance
+- Visualgo (visualização de algoritmos): https://visualgo.net
+- Big-O Cheat Sheet: https://www.bigocheatsheet.com/
+- Vídeo: https://www.youtube.com/watch?v=WUmAAxH9n-A
+
+---
+
 # Bind,Apply,Call
 
 # JavaScript Avançado
@@ -1302,5 +1745,446 @@ Essa busca por propriedades e métodos é chamada de **Prototype Chain** (cadeia
 
 ### Referência:
 https://www.youtube.com/watch?v=waOO3KxLohk
+
+---
+
+# Shallow x Deep Copy
+
+# JavaScript Avançado
+
+# Shallow Copy x Deep Copy
+
+Ao trabalhar com objetos e arrays em JavaScript, é muito importante entender a diferença entre **Shallow Copy (cópia rasa)** e **Deep Copy (cópia profunda)**.
+
+Essa diferença evita bugs relacionados ao compartilhamento de referências entre variáveis.
+
+---
+
+# Entendendo referências
+
+Em JavaScript, os tipos podem ser divididos em duas categorias:
+
+## Tipos primitivos
+
+São copiados por **valor**.
+
+Exemplos:
+
+- String
+- Number
+- Boolean
+- BigInt
+- Symbol
+- Undefined
+- Null
+
+```javascript
+let a = 10;
+let b = a;
+
+b = 20;
+
+console.log(a); // 10
+console.log(b); // 20
+```
+
+Cada variável possui seu próprio valor.
+
+---
+
+## Objetos
+
+Objetos, arrays e funções são armazenados por **referência**.
+
+```javascript
+const pessoa1 = {
+  nome: "João",
+};
+
+const pessoa2 = pessoa1;
+
+pessoa2.nome = "Maria";
+
+console.log(pessoa1.nome); // Maria
+console.log(pessoa2.nome); // Maria
+```
+
+Embora existam duas variáveis, ambas apontam para o **mesmo objeto na memória**.
+
+```
+pessoa1 ─────┐
+             ▼
+        {
+          nome: "Maria"
+        }
+             ▲
+pessoa2 ─────┘
+```
+
+---
+
+# O que é Shallow Copy?
+
+Uma **Shallow Copy (cópia rasa)** cria um **novo objeto**, porém apenas o primeiro nível é copiado.
+
+Se existirem objetos ou arrays aninhados, eles continuarão sendo compartilhados.
+
+```
+Novo objeto
+      │
+      ▼
+{
+  nome: "João",
+  endereco ─────────────┐
+}                       │
+                        ▼
+                 {
+                   cidade: "Fortaleza"
+                 }
+                        ▲
+Objeto original ────────┘
+```
+
+---
+
+# Exemplo com Spread Operator
+
+```javascript
+const pessoa1 = {
+  nome: "João",
+  endereco: {
+    cidade: "Fortaleza",
+  },
+};
+
+const pessoa2 = {
+  ...pessoa1,
+};
+
+pessoa2.nome = "Maria";
+
+console.log(pessoa1.nome); // João
+console.log(pessoa2.nome); // Maria
+```
+
+Até aqui tudo funciona porque `nome` é uma propriedade simples.
+
+Mas observe o objeto interno:
+
+```javascript
+pessoa2.endereco.cidade = "Recife";
+
+console.log(pessoa1.endereco.cidade);
+// Recife
+```
+
+Mesmo copiando o objeto com o operador `...`, o objeto `endereco` continua sendo compartilhado.
+
+---
+
+# Outros exemplos de Shallow Copy
+
+## Object.assign()
+
+```javascript
+const copia = Object.assign({}, pessoa1);
+```
+
+Também realiza apenas uma cópia rasa.
+
+---
+
+## Arrays
+
+```javascript
+const numeros = [1, 2, 3];
+
+const copia = [...numeros];
+```
+
+Para arrays contendo apenas valores primitivos, isso é suficiente.
+
+Porém:
+
+```javascript
+const pessoas = [
+  { nome: "João" },
+  { nome: "Maria" },
+];
+
+const copia = [...pessoas];
+
+copia[0].nome = "Carlos";
+
+console.log(pessoas[0].nome);
+// Carlos
+```
+
+Os objetos internos continuam sendo compartilhados.
+
+---
+
+# O que é Deep Copy?
+
+Uma **Deep Copy (cópia profunda)** cria uma cópia completamente independente.
+
+Todos os objetos internos também são copiados.
+
+```
+Objeto Original
+
+{
+  nome
+  endereco ───► { cidade }
+}
+
+                ↓
+
+Deep Copy
+
+{
+  nome
+  endereco ───► { cidade }
+}
+```
+
+Agora cada objeto possui suas próprias referências.
+
+---
+
+# Exemplo utilizando `structuredClone()`
+
+A maneira moderna de realizar uma Deep Copy é usando:
+
+```javascript
+const pessoa2 = structuredClone(pessoa1);
+```
+
+Exemplo completo:
+
+```javascript
+const pessoa1 = {
+  nome: "João",
+  endereco: {
+    cidade: "Fortaleza",
+  },
+};
+
+const pessoa2 = structuredClone(pessoa1);
+
+pessoa2.endereco.cidade = "Recife";
+
+console.log(pessoa1.endereco.cidade);
+// Fortaleza
+```
+
+Agora os objetos são totalmente independentes.
+
+---
+
+# Utilizando JSON
+
+Durante muitos anos era comum utilizar:
+
+```javascript
+const copia = JSON.parse(JSON.stringify(objeto));
+```
+
+Exemplo:
+
+```javascript
+const pessoa2 = JSON.parse(
+  JSON.stringify(pessoa1)
+);
+```
+
+Embora funcione em muitos casos, essa técnica possui limitações.
+
+Ela **não copia corretamente**:
+
+- Funções
+- `Date`
+- `Map`
+- `Set`
+- `undefined`
+- `BigInt`
+- Objetos com referências circulares
+- Instâncias de classes
+
+Por isso, hoje é recomendado utilizar `structuredClone()` sempre que possível.
+
+---
+
+# Comparando as abordagens
+
+## Spread
+
+```javascript
+const copia = {
+  ...objeto,
+};
+```
+
+✅ Simples
+
+❌ Apenas Shallow Copy
+
+---
+
+## Object.assign
+
+```javascript
+const copia = Object.assign({}, objeto);
+```
+
+✅ Simples
+
+❌ Apenas Shallow Copy
+
+---
+
+## structuredClone
+
+```javascript
+const copia = structuredClone(objeto);
+```
+
+✅ Deep Copy
+
+✅ Copia objetos aninhados
+
+✅ Mais segura
+
+---
+
+## JSON
+
+```javascript
+JSON.parse(JSON.stringify(objeto));
+```
+
+✅ Deep Copy em objetos simples
+
+❌ Possui diversas limitações
+
+---
+
+# Exemplo comparando os dois
+
+```javascript
+const usuario = {
+  nome: "Ana",
+  preferencias: {
+    tema: "dark",
+  },
+};
+
+const shallow = {
+  ...usuario,
+};
+
+const deep = structuredClone(usuario);
+
+shallow.preferencias.tema = "light";
+
+console.log(usuario.preferencias.tema);
+// light
+
+deep.preferencias.tema = "blue";
+
+console.log(usuario.preferencias.tema);
+// light
+```
+
+Observe que apenas a Deep Copy cria uma estrutura completamente independente.
+
+---
+
+# Quando usar Shallow Copy?
+
+Utilize quando:
+
+- O objeto possui apenas propriedades primitivas.
+- Você deseja copiar apenas o primeiro nível.
+- Não existem objetos aninhados.
+
+Exemplo:
+
+```javascript
+const usuario = {
+  nome: "Lucas",
+  idade: 25,
+};
+
+const copia = { ...usuario };
+```
+
+---
+
+# Quando usar Deep Copy?
+
+Utilize quando:
+
+- Existem objetos aninhados.
+- Existem arrays dentro de objetos.
+- Você precisa garantir que alterações na cópia não afetem o objeto original.
+
+Exemplo:
+
+```javascript
+const estado = structuredClone(state);
+```
+
+Esse cenário é comum em aplicações React, Redux e Vue.
+
+---
+
+# Resumo
+
+| Característica | Shallow Copy | Deep Copy |
+|----------------|--------------|-----------|
+| Cria novo objeto | ✅ | ✅ |
+| Copia apenas o primeiro nível | ✅ | ❌ |
+| Copia objetos internos | ❌ | ✅ |
+| Compartilha referências | ✅ | ❌ |
+| Mais rápido | ✅ | Geralmente não |
+| Mais seguro para objetos complexos | ❌ | ✅ |
+
+---
+
+# Fluxo mental
+
+```
+Preciso copiar um objeto?
+
+          │
+          ▼
+Possui objetos ou arrays internos?
+          │
+     ┌────┴────┐
+     │         │
+    Não       Sim
+     │         │
+     ▼         ▼
+Shallow     Deep Copy
+ Copy     (structuredClone)
+```
+
+---
+
+# Boas práticas
+
+- Utilize **Spread (`...`)** ou `Object.assign()` para objetos simples.
+- Prefira **`structuredClone()`** para objetos complexos com estruturas aninhadas.
+- Evite usar `JSON.parse(JSON.stringify())` em aplicações modernas, pois essa abordagem possui diversas limitações.
+- Lembre-se de que arrays também podem conter objetos e sofrer os mesmos problemas de compartilhamento de referência.
+
+---
+
+# Referências
+
+- Documentação MDN - `structuredClone()`: https://developer.mozilla.org/pt-BR/docs/Web/API/Window/structuredClone
+- Documentação MDN - Spread Syntax: https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Operators/Spread_syntax
+- Vídeo: https://www.youtube.com/watch?v=4L4HUjr9Zlg
 
 ---
