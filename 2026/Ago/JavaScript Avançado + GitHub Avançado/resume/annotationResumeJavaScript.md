@@ -1,7 +1,3 @@
-# Async+Await
-
-Aqui está uma versão mais completa, organizada e didática do seu arquivo Markdown:
-
 # JavaScript — Async e Await
 
 ## O que são `async` e `await`?
