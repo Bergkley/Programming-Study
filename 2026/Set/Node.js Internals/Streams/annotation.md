@@ -29,11 +29,13 @@ Sem Streams:
 
 ```
 Arquivo (5 GB)
-      │
-      ▼
+
+↓
+
 Carrega tudo na memória
-      │
-      ▼
+
+↓
+
 Processa os dados
 ```
 
@@ -50,23 +52,28 @@ Com Streams:
 ```
 Arquivo (5 GB)
 
-      │
-      ▼
+↓
+
 Chunk 1 (64 KB)
 
-      ▼
+↓
+
 Processa
 
-      ▼
+↓
+
 Chunk 2 (64 KB)
 
-      ▼
+↓
+
 Processa
 
-      ▼
+↓
+
 Chunk 3 (64 KB)
 
-      ▼
+↓
+
 ...
 ```
 
@@ -98,6 +105,141 @@ Cada chunk é processado individualmente.
 
 ---
 
+# O que é um Buffer?
+
+Antes de entender completamente as Streams, é importante conhecer o conceito de **Buffer**.
+
+Um **Buffer** é uma região temporária da memória utilizada para armazenar dados binários enquanto eles estão sendo lidos ou escritos.
+
+Em outras palavras:
+
+> **O Buffer funciona como uma área de espera para os dados antes que eles sejam processados.**
+
+Imagine uma torneira enchendo um balde.
+
+```
+Dados
+
+↓
+
+┌────────────┐
+│   Buffer   │
+└────────────┘
+
+↓
+
+Aplicação
+```
+
+Nas Streams, os dados normalmente chegam em pequenos pedaços (**chunks**) e cada chunk geralmente é representado por um `Buffer`.
+
+---
+
+## Exemplo
+
+```typescript
+import fs from "node:fs";
+
+const stream = fs.createReadStream("arquivo.txt");
+
+stream.on("data", (chunk) => {
+  console.log(chunk);
+});
+```
+
+Saída:
+
+```text
+<Buffer 48 65 6c 6c 6f 20 57 6f 72 6c 64>
+```
+
+Observe que o conteúdo recebido não é uma `string`, mas sim um objeto `Buffer`.
+
+---
+
+## Convertendo Buffer para String
+
+```typescript
+stream.on("data", (chunk) => {
+  console.log(chunk.toString());
+});
+```
+
+Saída:
+
+```text
+Hello World
+```
+
+---
+
+## Criando um Buffer manualmente
+
+```typescript
+const buffer = Buffer.from("Node.js");
+
+console.log(buffer);
+```
+
+Resultado:
+
+```text
+<Buffer 4e 6f 64 65 2e 6a 73>
+```
+
+Convertendo novamente:
+
+```typescript
+console.log(buffer.toString());
+```
+
+Saída:
+
+```text
+Node.js
+```
+
+---
+
+## Buffer x Stream
+
+É comum confundir esses conceitos.
+
+| Buffer | Stream |
+|----------|---------|
+| Armazena dados temporariamente | Transporta dados |
+| Fica na memória | Representa um fluxo contínuo |
+| Contém um único bloco de dados | Trabalha com vários chunks |
+| É utilizado pelas Streams | Utiliza Buffers para transportar dados |
+
+---
+
+## Relação entre Buffer e Stream
+
+```
+Arquivo
+
+↓
+
+Chunk 1 (Buffer)
+
+↓
+
+Chunk 2 (Buffer)
+
+↓
+
+Chunk 3 (Buffer)
+
+↓
+
+Aplicação
+```
+
+Cada evento `data` normalmente entrega um novo objeto `Buffer`.
+
+---
+
 # Tipos de Streams
 
 O Node.js possui quatro tipos principais de Streams.
@@ -117,10 +259,10 @@ Uma **Readable Stream** fornece dados para serem consumidos.
 
 Exemplos:
 
-- Ler arquivos
-- Receber uma requisição HTTP
-- Ler dados de um banco de dados
-- Consumir dados de uma API
+- Ler arquivos.
+- Receber uma requisição HTTP.
+- Ler dados de um banco de dados.
+- Consumir dados de uma API.
 
 ---
 
@@ -129,12 +271,10 @@ Exemplos:
 ```typescript
 import fs from "node:fs";
 
-const stream = fs.createReadStream(
-  "arquivo.txt"
-);
+const stream = fs.createReadStream("arquivo.txt");
 
 stream.on("data", (chunk) => {
-  console.log(chunk);
+  console.log(chunk.toString());
 });
 ```
 
@@ -159,10 +299,7 @@ Exemplos:
 ```typescript
 import fs from "node:fs";
 
-const stream =
-  fs.createWriteStream(
-    "saida.txt"
-  );
+const stream = fs.createWriteStream("saida.txt");
 
 stream.write("Olá\n");
 
@@ -183,9 +320,9 @@ Ela combina os comportamentos de uma Readable e de uma Writable Stream.
 
 Exemplos:
 
-- WebSockets
-- Conexões TCP
-- Comunicação entre processos
+- WebSockets.
+- Conexões TCP.
+- Comunicação entre processos.
 
 ```
 Leitura
@@ -208,13 +345,11 @@ Entrada
 
 "node"
 
-        │
-        ▼
+↓
 
 Transformação
 
-        │
-        ▼
+↓
 
 "NODE"
 ```
@@ -229,30 +364,23 @@ Exemplos:
 
 ---
 
-# Exemplo de Transform
+## Exemplo
 
 ```typescript
 import { Transform } from "node:stream";
 
-const upperCase =
-  new Transform({
-    transform(chunk, _, callback) {
-      callback(
-        null,
-        chunk
-          .toString()
-          .toUpperCase()
-      );
-    },
-  });
+const upperCase = new Transform({
+  transform(chunk, _, callback) {
+    callback(
+      null,
+      chunk.toString().toUpperCase()
+    );
+  },
+});
 
-upperCase.on(
-  "data",
-  console.log
-);
+upperCase.on("data", console.log);
 
 upperCase.write("node");
-
 upperCase.write("streams");
 
 upperCase.end();
@@ -301,20 +429,139 @@ Esse é um dos conceitos mais importantes do Node.js.
 ```typescript
 import fs from "node:fs";
 
-const leitura =
-  fs.createReadStream(
-    "entrada.txt"
-  );
+const leitura = fs.createReadStream("entrada.txt");
 
-const escrita =
-  fs.createWriteStream(
-    "copia.txt"
-  );
+const escrita = fs.createWriteStream("copia.txt");
 
 leitura.pipe(escrita);
 ```
 
 Nesse exemplo, o Node copia o arquivo utilizando Streams, sem carregar todo o conteúdo na memória.
+
+---
+
+# Pipeline
+
+Embora o método `pipe()` seja bastante utilizado, o Node.js oferece uma alternativa mais robusta chamada **`pipeline()`**.
+
+A função `pipeline()` conecta várias Streams e faz o gerenciamento automático de:
+
+- Erros.
+- Fechamento das Streams.
+- Limpeza de recursos.
+- Backpressure.
+
+Na maioria das aplicações modernas, ela é a forma recomendada para conectar Streams.
+
+---
+
+## Sintaxe
+
+```typescript
+pipeline(
+  origem,
+  transformacao,
+  destino,
+  callback
+);
+```
+
+---
+
+## Exemplo
+
+```typescript
+import fs from "node:fs";
+import { pipeline } from "node:stream";
+import zlib from "node:zlib";
+
+pipeline(
+  fs.createReadStream("entrada.txt"),
+  zlib.createGzip(),
+  fs.createWriteStream("entrada.txt.gz"),
+  (erro) => {
+    if (erro) {
+      console.error(erro);
+      return;
+    }
+
+    console.log("Arquivo compactado!");
+  }
+);
+```
+
+Fluxo:
+
+```
+entrada.txt
+
+↓
+
+Readable
+
+↓
+
+Gzip
+
+↓
+
+Writable
+
+↓
+
+entrada.txt.gz
+```
+
+---
+
+## `pipe()` x `pipeline()`
+
+### Utilizando `pipe()`
+
+```typescript
+readable
+  .pipe(transform)
+  .pipe(writable);
+```
+
+Caso alguma Stream gere erro, será necessário tratá-lo manualmente.
+
+---
+
+### Utilizando `pipeline()`
+
+```typescript
+pipeline(
+  readable,
+  transform,
+  writable,
+  (erro) => {
+    if (erro) {
+      console.error(erro);
+    }
+  }
+);
+```
+
+O `pipeline()` fecha todas as Streams corretamente e propaga os erros automaticamente.
+
+---
+
+## Pipeline com Promises
+
+Também existe uma versão baseada em Promises.
+
+```typescript
+import { pipeline } from "node:stream/promises";
+
+await pipeline(
+  fs.createReadStream("video.mp4"),
+  zlib.createGzip(),
+  fs.createWriteStream("video.mp4.gz")
+);
+```
+
+Essa versão funciona muito bem com `async/await`.
 
 ---
 
@@ -363,19 +610,9 @@ import zlib from "node:zlib";
 fs.createReadStream("video.mp4")
   .pipe(zlib.createGzip())
   .pipe(
-    fs.createWriteStream(
-      "video.mp4.gz"
-    )
+    fs.createWriteStream("video.mp4.gz")
   );
 ```
-
-Nesse fluxo:
-
-1. O arquivo é lido.
-2. Os dados são comprimidos.
-3. O resultado é salvo em outro arquivo.
-
-Tudo acontece em fluxo contínuo.
 
 ---
 
@@ -383,23 +620,17 @@ Tudo acontece em fluxo contínuo.
 
 As requisições e respostas HTTP do Node.js já são Streams.
 
-Servidor:
-
 ```typescript
 import http from "node:http";
 import fs from "node:fs";
 
-http
-  .createServer((req, res) => {
-    fs.createReadStream("video.mp4")
-      .pipe(res);
-  })
-  .listen(3000);
+http.createServer((req, res) => {
+  fs.createReadStream("video.mp4")
+    .pipe(res);
+}).listen(3000);
 ```
 
 Quando um cliente acessa a rota, o vídeo é enviado aos poucos.
-
-O servidor não precisa carregar o arquivo inteiro na memória.
 
 ---
 
@@ -410,7 +641,7 @@ Imagine que uma Stream lê dados muito mais rápido do que outra consegue escrev
 ```
 Leitura
 
-██████████████
+██████████████████
 
 ↓
 
@@ -421,9 +652,7 @@ Escrita
 
 Esse problema é chamado de **Backpressure**.
 
-O Node.js controla automaticamente esse fluxo quando utilizamos `pipe()`.
-
-Isso evita consumo excessivo de memória e torna o processamento mais eficiente.
+O Node.js controla automaticamente esse fluxo quando utilizamos `pipe()` ou `pipeline()`, evitando consumo excessivo de memória.
 
 ---
 
@@ -470,34 +699,21 @@ stream.on("error", (erro) => {
 Executado quando uma Writable Stream termina de escrever.
 
 ```typescript
-writeStream.on(
-  "finish",
-  () => {
-    console.log(
-      "Arquivo salvo"
-    );
-  }
-);
+writeStream.on("finish", () => {
+  console.log("Arquivo salvo");
+});
 ```
 
 ---
 
 # Exemplo completo
 
-Copiando um arquivo.
-
 ```typescript
 import fs from "node:fs";
 
-const origem =
-  fs.createReadStream(
-    "entrada.pdf"
-  );
+const origem = fs.createReadStream("entrada.pdf");
 
-const destino =
-  fs.createWriteStream(
-    "saida.pdf"
-  );
+const destino = fs.createWriteStream("saida.pdf");
 
 origem.pipe(destino);
 ```
@@ -531,10 +747,7 @@ saida.pdf
 Sem Stream:
 
 ```typescript
-const conteudo =
-  fs.readFileSync(
-    "video.mp4"
-  );
+const conteudo = fs.readFileSync("video.mp4");
 ```
 
 ```
@@ -554,9 +767,7 @@ Processamento
 Com Stream:
 
 ```typescript
-fs.createReadStream(
-  "video.mp4"
-);
+fs.createReadStream("video.mp4");
 ```
 
 ```
@@ -597,43 +808,43 @@ Utilize Streams quando trabalhar com:
 
 Nem sempre Streams são necessárias.
 
-Para arquivos pequenos, como um arquivo JSON de poucos kilobytes:
+Para arquivos pequenos:
 
 ```typescript
-const conteudo =
-  fs.readFileSync(
-    "config.json",
-    "utf8"
-  );
+const conteudo = fs.readFileSync(
+  "config.json",
+  "utf8"
+);
 ```
 
 Essa abordagem é mais simples e perfeitamente aceitável.
-
-Streams fazem mais sentido quando o volume de dados é grande ou contínuo.
 
 ---
 
 # Boas práticas
 
-- Prefira `pipe()` para conectar Streams, pois ele gerencia o fluxo e o **backpressure** automaticamente.
-- Sempre trate erros utilizando o evento `error`.
-- Utilize Streams para uploads, downloads e manipulação de arquivos grandes.
-- Evite `readFile()` ou `readFileSync()` para arquivos muito grandes.
-- Mantenha cada Stream com uma responsabilidade específica (ler, transformar ou escrever).
+- Prefira `pipeline()` em aplicações de produção.
+- Utilize `pipe()` para exemplos simples e encadeamentos rápidos.
+- Sempre trate erros utilizando o evento `error` ou o callback da `pipeline()`.
+- Evite `readFile()` e `readFileSync()` para arquivos grandes.
+- Mantenha cada Stream responsável por apenas uma tarefa.
+- Lembre-se de que os dados trafegam em **Buffers**, normalmente representados pelos chunks recebidos nos eventos `data`.
 
 ---
 
 # Resumo
 
-| Tipo | Descrição |
-|-------|-----------|
-| `Readable` | Lê dados |
-| `Writable` | Escreve dados |
-| `Duplex` | Lê e escreve |
-| `Transform` | Lê, transforma e escreve |
-| `pipe()` | Conecta Streams |
-| `chunk` | Pequeno bloco de dados |
-| `backpressure` | Controle do fluxo entre leitura e escrita |
+| Conceito | Descrição |
+|-----------|-----------|
+| Buffer | Área temporária da memória que armazena dados binários |
+| Chunk | Pequeno bloco de dados transportado por uma Stream |
+| Readable | Lê dados |
+| Writable | Escreve dados |
+| Duplex | Lê e escreve |
+| Transform | Lê, transforma e escreve |
+| pipe() | Conecta Streams |
+| pipeline() | Conecta Streams com tratamento automático de erros |
+| Backpressure | Controle do fluxo entre leitura e escrita |
 
 ---
 
@@ -652,11 +863,19 @@ Preciso processar muitos dados?
 
                   │
                   ▼
-      Ler → Transformar → Escrever
+        Readable Stream
 
                   │
                   ▼
-              pipe()
+         Transform Stream
+
+                  │
+                  ▼
+        Writable Stream
+
+                  │
+                  ▼
+            pipeline()
 ```
 
 ---
@@ -664,7 +883,7 @@ Preciso processar muitos dados?
 # Referências
 
 - Documentação oficial do Node.js - Streams: https://nodejs.org/docs/latest/api/stream.html
+- Documentação oficial do Node.js - Buffer: https://nodejs.org/docs/latest/api/buffer.html
 - Documentação oficial do Node.js - File System (`fs`): https://nodejs.org/docs/latest/api/fs.html
 - Vídeo: https://www.youtube.com/watch?v=6yvBVShDW0M
 - Vídeo: https://www.youtube.com/watch?v=pB5-QzabL2I
-````
