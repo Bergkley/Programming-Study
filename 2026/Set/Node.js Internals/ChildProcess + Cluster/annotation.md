@@ -15,7 +15,10 @@ Quando isso acontece, existem três abordagens principais:
 - **Cluster** → cria vários processos Node.js para aproveitar todos os núcleos da CPU em servidores.
 
 ---
+## Diferença entre Worker Threads X Child Process
+Worker Threads compartilham o mesmo ambiente de execução e a memória do processo pai. (usar para CPU e Memoria Ram)
 
+Child Processes são instâncias separadas, com ambientes de execução e memórias isolados. (assíncronas em segundo plano)
 ## Child Process
 
 Permite executar outro processo.
