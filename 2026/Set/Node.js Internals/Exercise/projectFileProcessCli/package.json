@@ -1,0 +1,26 @@
+{
+  "name": "file-processor-cli",
+  "version": "1.0.0",
+  "description": "CLI para processar arquivos grandes com Streams, Buffers e Worker Threads.",
+  "type": "module",
+  "main": "index.mjs",
+  "bin": {
+    "file-processor": "./cli.mjs"
+  },
+  "scripts": {
+    "start": "node cli.mjs",
+    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js"
+  },
+  "keywords": [
+    "nodejs",
+    "streams",
+    "buffers",
+    "worker-threads",
+    "cli"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^30.0.0"
+  }
+}

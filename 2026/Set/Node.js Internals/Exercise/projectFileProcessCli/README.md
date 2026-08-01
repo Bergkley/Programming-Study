@@ -110,6 +110,26 @@ Erro ao processar arquivo: Input file not found: ...
 
 Nesse caso, `saida.csv` nao deve ser criado.
 
+## Testes com Jest
+
+Instale as dependencias:
+
+```powershell
+npm install
+```
+
+Execute os testes:
+
+```powershell
+npm test
+```
+
+Saida esperada:
+
+```text
+PASS __tests__/process-file.test.mjs
+```
+
 ## Fluxo interno
 
 ```text
