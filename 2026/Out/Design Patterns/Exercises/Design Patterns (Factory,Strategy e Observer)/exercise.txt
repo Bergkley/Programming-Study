@@ -1,0 +1,180 @@
+/* ==========================================================
+   EXERCÍCIO 02 - LOJA VIRTUAL
+   ==========================================================
+
+Sistema de Compras Online.
+
+O sistema deve permitir que um cliente faça um pedido,
+escolha uma forma de pagamento e seja notificado sobre
+o status da compra.
+
+------------------------------------------------------------
+PATTERNS OBRIGATÓRIOS
+------------------------------------------------------------
+
+✔ Factory
+✔ Strategy
+✔ Observer
+
+------------------------------------------------------------
+REQUISITOS
+------------------------------------------------------------
+
+1) Factory Pattern
+
+Criar uma fábrica responsável por criar os tipos de pagamento.
+
+Exemplos:
+
+- Cartão
+- Pix
+- Boleto
+
+A classe principal NÃO pode utilizar "new" diretamente
+para criar os pagamentos.
+
+Exemplo:
+
+Pagamento pagamento = PagamentoFactory.criar("PIX");
+
+------------------------------------------------------------
+
+2) Strategy Pattern
+
+Cada forma de pagamento deve possuir sua própria estratégia.
+
+Exemplos:
+
+Cartão
+→ "Pagamento realizado com Cartão."
+
+Pix
+→ "Pagamento realizado via Pix."
+
+Boleto
+→ "Boleto gerado com sucesso."
+
+Todas devem implementar a interface:
+
+interface Pagamento{
+    void pagar(double valor);
+}
+
+------------------------------------------------------------
+
+3) Observer Pattern
+
+Após o pagamento, todos os inscritos devem receber uma notificação.
+
+Criar:
+
+Subject:
+Pedido
+
+Observers:
+
+Cliente
+Administrador
+Estoque
+
+Sempre que o status mudar, todos os observadores recebem
+automaticamente a mensagem.
+
+Exemplo:
+
+Status alterado para:
+"PAGAMENTO APROVADO"
+
+Saída esperada:
+
+Cliente recebeu:
+PAGAMENTO APROVADO
+
+Administrador recebeu:
+PAGAMENTO APROVADO
+
+Estoque recebeu:
+PAGAMENTO APROVADO
+
+------------------------------------------------------------
+
+OBJETIVOS
+
+✔ Aplicar Factory Pattern
+✔ Aplicar Strategy Pattern
+✔ Aplicar Observer Pattern
+✔ Utilizar Interfaces
+✔ Evitar acoplamento
+✔ Separar responsabilidades
+
+------------------------------------------------------------
+
+ESTRUTURA SUGERIDA
+
+Pagamento (Interface)
+
+CartaoPagamento
+PixPagamento
+BoletoPagamento
+
+PagamentoFactory
+
+Observer (Interface)
+
+Cliente
+Administrador
+Estoque
+
+Pedido (Subject)
+
+Main
+
+------------------------------------------------------------
+
+BÔNUS
+
+Após o pagamento:
+
+✔ Atualizar o status para:
+"PAGAMENTO APROVADO"
+
+✔ Depois alterar para:
+"PEDIDO ENVIADO"
+
+Todos os observadores devem receber as duas notificações.
+
+------------------------------------------------------------
+
+EXEMPLO DE EXECUÇÃO
+
+Forma escolhida: PIX
+
+Pagamento realizado via Pix.
+Valor: R$ 250,00
+
+Status:
+PAGAMENTO APROVADO
+
+Cliente recebeu:
+PAGAMENTO APROVADO
+
+Administrador recebeu:
+PAGAMENTO APROVADO
+
+Estoque recebeu:
+PAGAMENTO APROVADO
+
+
+Status:
+PEDIDO ENVIADO
+
+Cliente recebeu:
+PEDIDO ENVIADO
+
+Administrador recebeu:
+PEDIDO ENVIADO
+
+Estoque recebeu:
+PEDIDO ENVIADO
+
+------------------------------------------------------------
