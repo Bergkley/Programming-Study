@@ -753,3 +753,4 @@ Factory Strategy Observer
 - :contentReference[oaicite:2]{index=2}
 - Documentação oficial - EventEmitter (Node.js): https://nodejs.org/api/events.html
 - Refactoring Guru: https://refactoring.guru/design-patterns
+- Vídeo Design Pattern - Observer : https://www.youtube.com/watch?v=e67Se5lFD5g
