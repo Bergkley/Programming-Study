@@ -1,0 +1,235 @@
+EXERCÍCIO: CLEAN CODE E REFATORAÇÃO EM TYPESCRIPT
+
+Objetivo:
+Refatorar um arquivo TypeScript legado aplicando princípios de Clean Code, deixando o código mais organizado, legível, testável e fácil de evoluir.
+
+Contexto:
+Você recebeu um arquivo chamado "order.ts" que contém uma classe responsável por calcular o valor final de um pedido.
+
+O código atual funciona, mas possui problemas de manutenção:
+
+* Muitos métodos possuem responsabilidades diferentes.
+* Existem regras de negócio misturadas.
+* Há excesso de condicionais.
+* Os nomes das variáveis e métodos podem ser melhorados.
+* O código é difícil de testar e expandir.
+
+TAREFAS:
+
+1. Melhorar nomes
+
+Analise todos os nomes utilizados no código e substitua nomes genéricos ou pouco claros por nomes mais expressivos.
+
+Exemplos:
+
+* Métodos devem indicar claramente o que fazem.
+* Variáveis devem representar melhor seus valores.
+* Tipos devem evitar nomes genéricos como "string" quando existe um conceito de negócio.
+
+---
+
+2. Separar responsabilidades
+
+A classe principal não deve ser responsável por tudo.
+
+Identifique responsabilidades que podem ser separadas:
+
+* Cálculo do subtotal dos produtos.
+* Aplicação de desconto por tipo de cliente.
+* Aplicação de cupons.
+* Aplicação de descontos adicionais.
+* Exibição de informações no console.
+
+Cada parte deve possuir uma responsabilidade clara.
+
+---
+
+3. Melhorar regras condicionais
+
+Evite grandes blocos de if/else.
+
+O código deve ser preparado para receber novas regras sem precisar alterar muitas partes existentes.
+
+Exemplo:
+
+Adicionar um novo tipo de cliente não deveria exigir várias alterações espalhadas pelo código.
+
+---
+
+4. Criar tipos mais seguros
+
+Evite utilizar tipos genéricos.
+
+Exemplo:
+
+customerType: string
+
+Deve ser substituído por uma estrutura que aceite somente valores válidos.
+
+Pense em utilizar:
+
+* union types;
+* enums;
+* interfaces;
+* classes.
+
+---
+
+5. Criar funções pequenas
+
+Quebre funções grandes em funções menores com responsabilidades específicas.
+
+Exemplos:
+
+* calcularSubtotal()
+* calcularDescontoCliente()
+* calcularDescontoCupom()
+* aplicarDescontoPedidoGrande()
+
+Cada função deve fazer apenas uma coisa.
+
+---
+
+6. Manter o mesmo comportamento
+
+A refatoração não deve alterar as regras existentes.
+
+O resultado final esperado para o exemplo fornecido deve continuar sendo:
+
+Valor inicial:
+5200
+
+Desconto cliente VIP (20%):
+4160
+
+Cupom DISCOUNT10 (10%):
+3744
+
+Desconto pedido grande:
+3694
+
+Resultado final esperado:
+
+3694
+
+---
+
+DESAFIOS EXTRAS:
+
+Nível 1:
+Criar testes unitários para validar os cálculos.
+
+Nível 2:
+Aplicar Strategy Pattern para os descontos.
+
+Exemplo:
+
+interface DiscountStrategy {
+apply(value: number): number;
+}
+
+Criar estratégias separadas:
+
+* VipDiscount
+* EmployeeDiscount
+* NewCustomerDiscount
+* CouponDiscount
+
+
+
+Critérios de avaliação:
+
+O código final deve:
+
+✓ Ter nomes claros.
+✓ Ter funções pequenas.
+✓ Ter responsabilidades separadas.
+✓ Ser fácil de testar.
+✓ Permitir adicionar novas regras facilmente.
+✓ Evitar duplicação.
+✓ Seguir princípios de Clean Code e SOLID.
+
+Boa prática:
+Antes de refatorar, entenda o comportamento atual. Refatore aos poucos e valide se o resultado continua correto.
+
+
+codigo : 
+
+type Product = {
+  name: string;
+  price: number;
+  quantity: number;
+};
+
+class Order {
+  products: Product[];
+  customerType: string;
+  coupon: string | null;
+
+  constructor(products: Product[], customerType: string, coupon: string | null) {
+    this.products = products;
+    this.customerType = customerType;
+    this.coupon = coupon;
+  }
+
+  calculate() {
+    let total = 0;
+
+    for (let i = 0; i < this.products.length; i++) {
+      total += this.products[i].price * this.products[i].quantity;
+    }
+
+    if (this.customerType === "VIP") {
+      total = total - (total * 20) / 100;
+    } else if (this.customerType === "EMPLOYEE") {
+      total = total - (total * 30) / 100;
+    } else if (this.customerType === "NEW") {
+      total = total - (total * 10) / 100;
+    }
+
+    if (this.coupon !== null) {
+      if (this.coupon === "DISCOUNT10") {
+        total = total - (total * 10) / 100;
+      }
+
+      if (this.coupon === "DISCOUNT20") {
+        total = total - (total * 20) / 100;
+      }
+    }
+
+    if (total > 1000) {
+      total = total - 50;
+    }
+
+    console.log(
+      "Cliente:",
+      this.customerType,
+      "Comprou:",
+      this.products.length,
+      "produtos",
+      "Total:",
+      total
+    );
+
+    return total;
+  }
+}
+
+const order = new Order(
+  [
+    {
+      name: "Notebook",
+      price: 5000,
+      quantity: 1,
+    },
+    {
+      name: "Mouse",
+      price: 100,
+      quantity: 2,
+    },
+  ],
+  "VIP",
+  "DISCOUNT10"
+);
+
+order.calculate();
