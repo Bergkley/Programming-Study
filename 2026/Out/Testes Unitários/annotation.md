@@ -320,6 +320,184 @@ Cobertura alta não significa ausência de bugs, mas ajuda a identificar partes 
 
 ---
 
+# O que é TDD?
+
+**TDD (Test-Driven Development)**, ou Desenvolvimento Orientado a Testes, é uma prática em que o teste é escrito **antes** do código de produção.
+
+Em vez de programar e depois testar, a lógica se inverte:
+
+> **Primeiro escrevo o teste que descreve o comportamento esperado, depois escrevo o código mínimo para fazê-lo passar.**
+
+---
+
+# O ciclo Red - Green - Refactor
+
+```
+Red
+
+↓
+
+Escrever um teste que falha
+
+↓
+
+Green
+
+↓
+
+Escrever o código mínimo
+
+para o teste passar
+
+↓
+
+Refactor
+
+↓
+
+Melhorar o código
+
+mantendo os testes passando
+```
+
+- **Red**: escreve um teste para uma funcionalidade que ainda não existe. Ele falha, pois o código ainda não foi implementado.
+- **Green**: implementa o código mais simples possível apenas para o teste passar.
+- **Refactor**: melhora a estrutura do código (aplicando Clean Code, removendo Code Smells) sem quebrar o teste.
+
+Esse ciclo se repete a cada nova funcionalidade ou regra de negócio.
+
+---
+
+# Exemplo — Ciclo completo
+
+**1. Red — escrevendo o teste primeiro**
+
+```typescript
+describe("somar", () => {
+
+  it("deve retornar a soma de dois números", () => {
+    expect(somar(2, 3)).toBe(5);
+  });
+
+});
+```
+
+Nesse momento, a função `somar` ainda **não existe**. O teste falha.
+
+**2. Green — implementando o mínimo necessário**
+
+```typescript
+function somar(a: number, b: number) {
+  return a + b;
+}
+```
+
+O teste agora passa.
+
+**3. Refactor — melhorando se necessário**
+
+```typescript
+function somar(a: number, b: number): number {
+  return a + b;
+}
+```
+
+Nesse caso simples a refatoração é mínima, mas em funções mais complexas é aqui que se aplicam boas práticas de Clean Code.
+
+---
+
+# Exemplo — Adicionando uma nova regra
+
+Suponha que agora seja necessário validar que os números não podem ser negativos.
+
+**Red**
+
+```typescript
+it("deve lançar erro se algum número for negativo", () => {
+
+  expect(() => somar(-1, 5)).toThrow(
+    "Números não podem ser negativos"
+  );
+
+});
+```
+
+**Green**
+
+```typescript
+function somar(a: number, b: number): number {
+
+  if (a < 0 || b < 0) {
+    throw new Error("Números não podem ser negativos");
+  }
+
+  return a + b;
+
+}
+```
+
+**Refactor**
+
+```typescript
+function validarNumerosPositivos(...numeros: number[]) {
+  if (numeros.some((n) => n < 0)) {
+    throw new Error("Números não podem ser negativos");
+  }
+}
+
+function somar(a: number, b: number): number {
+  validarNumerosPositivos(a, b);
+  return a + b;
+}
+```
+
+Todos os testes continuam passando, mas o código ficou mais legível e reutilizável.
+
+---
+
+# Vantagens do TDD
+
+- Garante que todo código escrito tem um motivo (um teste que exige sua existência).
+- Reduz código desnecessário, já que só se implementa o suficiente para passar no teste.
+- Gera uma suíte de testes robusta como consequência natural do processo.
+- Facilita o design do código, pois pensar no teste antes ajuda a definir interfaces mais simples.
+- Dá segurança para refatorar constantemente.
+
+---
+
+# Desafios do TDD
+
+- Exige disciplina e mudança de hábito.
+- Pode parecer mais lento no início.
+- Nem todo cenário é simples de testar antes de existir (ex.: integrações complexas, UI).
+- Requer prática para escrever bons testes antes da implementação.
+
+---
+
+# Quando aplicar TDD?
+
+Utilize quando:
+
+- a regra de negócio for clara o suficiente para ser descrita em um teste;
+- for uma função ou módulo com lógica importante;
+- quiser garantir cobertura desde o início do desenvolvimento;
+- estiver corrigindo um bug (escreva primeiro o teste que reproduz o bug).
+
+TDD é mais difícil de aplicar em cenários muito exploratórios, onde o comportamento esperado ainda não está bem definido.
+
+---
+
+# TDD x Testes escritos depois
+
+| TDD (testes antes) | Testes escritos depois |
+|----------|----------|
+| Teste guia o design do código | Código já existe, teste apenas valida |
+| Menor chance de código não testado | Pode haver trechos sem cobertura |
+| Ciclo Red-Green-Refactor | Sem ciclo definido |
+| Exige mais disciplina | Mais flexível, porém mais fácil de negligenciar |
+
+---
+
 # Vantagens de usar Jest
 
 - Configuração simples, tudo em uma única ferramenta.
@@ -470,6 +648,7 @@ Nomes claros em `it`/`describe` tornam o teste também uma forma de documentaç�
 | Teste Unitário | Garantir que uma função/classe funciona isoladamente |
 | Mock | Isolar dependências externas |
 | Coverage | Medir quanto do código está coberto por testes |
+| TDD | Guiar o desenvolvimento a partir dos testes (Red-Green-Refactor) |
 
 ---
 
