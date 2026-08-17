@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id             Int             @id @default(autoincrement())
+  name           String
+  email          String          @unique
+
+  posts          Post[]
+  socialAccounts SocialAccount[]
+
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+model Post {
+  id              Int                  @id @default(autoincrement())
+  title           String
+  content         String?
+  published       Boolean              @default(false)
+
+  author          User                 @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId        Int
+
+  publications    PostSocialAccount[]
+
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+
+  @@index([authorId])
+}
+
+model SocialMedia {
+  id              Int             @id @default(autoincrement())
+  name            String          @unique
+
+  socialAccounts  SocialAccount[]
+
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+}
+
+model SocialAccount {
+  id              Int             @id @default(autoincrement())
+
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          Int
+
+  socialMedia     SocialMedia     @relation(fields: [socialMediaId], references: [id], onDelete: Cascade)
+  socialMediaId   Int
+
+  username        String?
+  accessToken     String?
+
+  publications    PostSocialAccount[]
+
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@unique([userId, socialMediaId])
+  @@index([userId])
+  @@index([socialMediaId])
+}
+
+model PostSocialAccount {
+  id              Int           @id @default(autoincrement())
+
+  post            Post          @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId          Int
+
+  socialAccount   SocialAccount @relation(fields: [socialAccountId], references: [id], onDelete: Cascade)
+  socialAccountId Int
+
+  publishedAt     DateTime?
+
+  @@unique([postId, socialAccountId])
+  @@index([postId])
+  @@index([socialAccountId])
+}
