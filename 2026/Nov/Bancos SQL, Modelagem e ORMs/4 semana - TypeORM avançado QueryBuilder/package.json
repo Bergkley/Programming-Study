@@ -1,0 +1,24 @@
+{
+  "name": "typeorm-querybuilder-estudo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Projeto didático de TypeORM, SQLite e QueryBuilder",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "seed": "tsx src/seed.ts",
+    "queries": "tsx src/query-builder.ts",
+    "mutations": "tsx src/mutations.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.11.1",
+    "reflect-metadata": "^0.2.2",
+    "typeorm": "^1.1.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^9.6.0",
+    "@types/node": "^26.2.0",
+    "tsx": "^4.23.12",
+    "typescript": "^7.0.2"
+  }
+}
