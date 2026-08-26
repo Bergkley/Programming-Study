@@ -1,18 +1,21 @@
-import "dotenv/config";
-import { app } from "./app.js";
-import { prisma } from "./database/prisma.js";
+import dotEnv from "dotenv";
+import app from "./app.js";
+import { prisma } from "../src/database/prisma.js";
 
-const port = Number(process.env.PORT ?? 3000);
+dotEnv.config();
 
-const server = app.listen(port, () => {
-  console.log(`API running at http://localhost:${port}`);
-});
+const port = process.env.PORT ?? 3000;
+
+const [, server] = await Promise.all([
+  prisma.$connect(),
+  app.listen(port, () => {
+    console.log("servidor rodando com sucesso");
+  }),
+]);
 
 async function shutdown() {
   await prisma.$disconnect();
-  server.close(() => {
-    process.exit(0);
-  });
+  await server.close();
 }
 
 process.on("SIGINT", () => {

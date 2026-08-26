@@ -8,11 +8,10 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  googleId  String   @unique
-  name      String
-  email     String   @unique
-  avatarUrl String?
+  id    String @unique @default(uuid())
+  name  String
+  email String @unique
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

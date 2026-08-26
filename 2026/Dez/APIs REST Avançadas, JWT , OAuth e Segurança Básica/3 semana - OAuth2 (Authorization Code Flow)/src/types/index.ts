@@ -1,14 +1,25 @@
-export type AuthUser = {
+export type User = {
   id: string;
   name: string;
   email: string;
-  avatarUrl: string | null;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
+export type UserListItem = Pick<User, "id" | "name" | "email">;
+
 export type GoogleProfile = {
-  sub: string;
   name: string;
   email: string;
-  email_verified?: boolean;
-  picture?: string;
+};
+
+export type ResponseToken = {
+  access_token?: string;
+  error?: string;
+  error_description?: string;
+};
+
+export type AuthGoogleResponse = {
+  message: string;
+  user: User;
 };

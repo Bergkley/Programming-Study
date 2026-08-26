@@ -1,19 +1,17 @@
 import express from "express";
 import { authRouter } from "./routes/auth.routes.js";
 import { healthRouter } from "./routes/health.routes.js";
-import { errorMiddleware } from "./middlewares/error.middleware.js";
-import { notFoundMiddleware } from "./middlewares/not-found.middleware.js";
-import { requestIdMiddleware } from "./middlewares/request-id.middleware.js";
+import { userRouter } from "./routes/users.routes.js";
+import { errorHandler } from "./middlewares/error-handler.js";
 
-
-export const app = express();
+const app = express();
 
 app.use(express.json());
-app.use(requestIdMiddleware);
-
 app.use(healthRouter);
 app.use("/auth", authRouter);
+app.use("/user", userRouter);
 
-app.use(notFoundMiddleware);
-app.use(errorMiddleware);
+app.use(errorHandler);
+
+export default app;
 
