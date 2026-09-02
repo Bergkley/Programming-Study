@@ -1,6 +1,7 @@
 import express from "express";
 import { errorHandler } from "./middlewares/error-handle.middleware.js";
 import { LoggerRequest } from "./middlewares/logging-middleware.js";
+import { authRoute } from "./routes/auth.routes.js";
 
 
 export default class App {
@@ -17,7 +18,7 @@ export default class App {
     }
 
     private routes(): void {
-
+        this.app.use('/auth',authRoute)
         this.app.use(errorHandler)
     }
 
