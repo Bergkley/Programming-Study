@@ -14,10 +14,10 @@ export function errorHandler(
         ...(error.details !== undefined ? { details: error.details } : {}),
       }
 
-      res.status(error.statusCode).json(responseBoby);
+      return res.status(error.statusCode).json(responseBoby);
     }
 
-    res.status(500).json({
+    return res.status(500).json({
       message: error.message || "Erro interno no servidor",
     });
   }

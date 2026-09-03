@@ -1,5 +1,5 @@
 export type AuthenticatedUser = {
-  id: string;
+  id: number;
   email: string;
   name: string;
 };
@@ -14,3 +14,10 @@ export type User = {
 
 export type CreateUser = Pick<User, "name" | "email">;
 export type FindUserById = Pick<User, "id">;
+
+
+export type ResponseToken = {
+  access_token?: string;
+  error?: string;
+  error_description?: string;
+};

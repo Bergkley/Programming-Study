@@ -23,26 +23,34 @@ export function authAuthorizationMiddleware(
   const authorizationHeader = req.headers.authorization;
   const cookieAuthorizationHeader = getCookieValue(
     req.headers.cookie,
-    "acess_token",
+    "access_token",
   );
 
-  if (!authorizationHeader || !cookieAuthorizationHeader)
+  if (!authorizationHeader && !cookieAuthorizationHeader)
     throw unauthorized("Token não encontrado");
 
   const [bearer, authorizationToken] = authorizationHeader?.split(" ") ?? [];
 
-  const token = authorizationHeader || cookieAuthorizationHeader;
-
   if (authorizationHeader && (!bearer || bearer !== "Bearer")) {
     throw forbidden();
   }
+
+  const token = authorizationToken || cookieAuthorizationHeader;
 
   if (!token) {
     throw unauthorized("Token não encontrado");
   }
 
   try {
-    const verifyToken = jwt.verify(token, process.env.JWT_SECRET || "") as AuthenticatedUser;
+    const verifyToken = jwt.verify(
+      token,
+      process.env.JWT_ACCESS_SECRET || "",
+      { algorithms: ["HS256"] },
+    ) as AuthenticatedUser & { type?: string };
+
+    if (verifyToken.type !== "access") {
+      throw new Error("Tipo de token invalido");
+    }
 
     req.user = {
         id: verifyToken.id,

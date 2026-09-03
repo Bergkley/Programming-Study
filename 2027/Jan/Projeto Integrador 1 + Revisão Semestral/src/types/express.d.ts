@@ -1,5 +1,4 @@
-import { Request } from "express";
-import AuthenticatedUser from "./index.ts";
+import { AuthenticatedUser } from "./index.js";
 
 declare global {
   namespace Express {
