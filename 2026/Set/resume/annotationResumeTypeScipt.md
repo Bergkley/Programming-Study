@@ -410,7 +410,7 @@ Resultado:
 # Extraindo o tipo de uma Promise
 
 ```typescript
-type Awaited<T> =
+type MeuAwaited<T> =
   T extends Promise<infer U>
     ? U
     : T;
@@ -420,7 +420,7 @@ Uso:
 
 ```typescript
 type Usuario =
-  Awaited<
+  MeuAwaited<
     Promise<string>
   >;
 ```
@@ -620,7 +620,7 @@ Esse padrão aparece com frequência em DTOs, formulários e bibliotecas de vali
 - Vídeo: https://www.youtube.com/watch?v=kq-7J5w_LUA
 - Vídeo: https://www.youtube.com/watch?v=IdW0Z9npMb8
 - Vídeo: https://www.youtube.com/watch?v=0iDDpKGPvYA
-````
+```
 
 
 ---
@@ -1159,7 +1159,7 @@ Classe     Método     Propriedade
 - Documentação oficial do TypeScript - Decorators: https://www.typescriptlang.org/docs/handbook/decorators.html
 - Proposta de Decorators (TC39): https://github.com/tc39/proposal-decorators
 - Vídeo: https://www.youtube.com/watch?v=KquAqdsucTM
-````
+```
 
 
 ---
@@ -1568,7 +1568,9 @@ interface ApiResponse<T> {
 async function buscar<T>(url: string): Promise<ApiResponse<T>> {
   const response = await fetch(url);
 
-  return response.json();
+  const dados: ApiResponse<T> = await response.json();
+
+  return dados;
 }
 ```
 
@@ -1913,10 +1915,12 @@ interface Usuario {
 
 ```typescript
 function ehUsuario(
-  valor: any
+  valor: unknown
 ): valor is Usuario {
   return (
-    valor &&
+    typeof valor === "object" &&
+    valor !== null &&
+    "nome" in valor &&
     typeof valor.nome === "string"
   );
 }
@@ -2162,7 +2166,7 @@ O TypeScript verifica o tipo antes de permitir o acesso às propriedades.
 - Documentação oficial - Narrowing (Type Guards): https://www.typescriptlang.org/docs/handbook/2/narrowing.html
 - Documentação oficial do TypeScript: https://www.typescriptlang.org/docs/
 - Vídeo: https://www.youtube.com/watch?v=DNmCS4PT9bc
-````
+```
 
 
 ---
@@ -2594,7 +2598,9 @@ const usuario = {
   id: 1,
 };
 
-objeto[usuario] = "João";
+const chave = String(usuario);
+
+objeto[chave] = "João";
 ```
 
 Internamente:
@@ -2685,9 +2691,9 @@ const mapa =
 
 | Operação | Set | Map |
 |----------|-----|-----|
-| Inserção | O(1) |
-| Busca | O(1) |
-| Remoção | O(1) |
+| Inserção | O(1) | O(1) |
+| Busca | O(1) | O(1) |
+| Remoção | O(1) | O(1) |
 
 Essas operações são, em média, de tempo constante.
 
@@ -3455,6 +3461,6 @@ ReturnType Parameters
 
 - Documentação oficial do TypeScript - Utility Types: https://www.typescriptlang.org/docs/handbook/utility-types.html
 - Documentação oficial do TypeScript: https://www.typescriptlang.org/docs/
--Vídeo - https://www.youtube.com/watch?v=vVmfmc02AOc
+- Vídeo - https://www.youtube.com/watch?v=vVmfmc02AOc
 
 ---
