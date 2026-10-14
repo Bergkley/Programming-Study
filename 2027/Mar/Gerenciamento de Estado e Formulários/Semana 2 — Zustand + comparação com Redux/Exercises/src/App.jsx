@@ -1,0 +1,78 @@
+import reactLogo from "./assets/react.svg";
+import viteLogo from "/vite.svg";
+import "./App.css";
+import { useCounterStore } from "./store/counter";
+
+function App() {
+  const counterStore = useCounterStore();
+
+  const handleActions = (action, value) => {
+    switch (action) {
+      case "increment":
+        counterStore.increment();
+        break;
+
+      case "incrementAmount":
+        counterStore.incrementAmount(value);
+
+        break;
+
+      case "deleteIncrement":
+        counterStore.deleteIncrement();
+
+        break;
+
+      case "resetAllIncrement":
+        counterStore.resetAllIncrement();
+
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  return (
+    <>
+      <div>
+        <a href="https://vitejs.dev" target="_blank">
+          <img src={viteLogo} className="logo" alt="Vite logo" />
+        </a>
+
+        <a href="https://react.dev" target="_blank">
+          <img src={reactLogo} className="logo react" alt="React logo" />
+        </a>
+      </div>
+
+      <h1>Vite + React</h1>
+
+      <div className="card">
+        <button onClick={() => handleActions("increment")}>+1</button>
+      </div>
+
+      <div className="card">
+        <button onClick={() => handleActions("incrementAfterDelay")}>
+          +10 com delay
+        </button>
+      </div>
+
+      <div className="card">
+        <button onClick={() => handleActions("incrementAmount", 5)}>+5</button>
+      </div>
+
+      <div className="card">
+        <button onClick={() => handleActions("deleteIncrement")}>-1</button>
+      </div>
+
+      <div className="card">
+        <button onClick={() => handleActions("resetAllIncrement")}>
+          Resetar
+        </button>
+      </div>
+
+      <p className="read-the-docs">Count: {counterStore.count}</p>
+    </>
+  );
+}
+
+export default App;
