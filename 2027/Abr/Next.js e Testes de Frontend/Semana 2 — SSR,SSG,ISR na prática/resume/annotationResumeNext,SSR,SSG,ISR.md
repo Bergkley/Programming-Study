@@ -1,16 +1,15 @@
 # Next.js
 
-# SSR, SSG e ISR
+# SSR, SSG, ISR e CSR
 
 Uma das decisões mais importantes ao construir uma aplicação Next.js é **quando e onde cada página é renderizada**. O Next.js oferece diferentes estratégias de renderização, cada uma com um equilíbrio diferente entre **performance**, **atualidade dos dados** e **custo de servidor**.
 
-As três estratégias principais são:
+As quatro estratégias são:
 
 - **SSG (Static Site Generation)**: a página é gerada **uma vez, no build**, e servida como arquivo estático.
 - **SSR (Server-Side Rendering)**: a página é gerada **a cada requisição**, no servidor.
 - **ISR (Incremental Static Regeneration)**: a página é estática, mas **regenerada em segundo plano** de tempos em tempos (ou sob demanda).
-
-Também existe o **CSR (Client-Side Rendering)**, em que o navegador monta a página com JavaScript, usado para partes interativas e específicas de cada usuário.
+- **CSR (Client-Side Rendering)**: o **navegador** monta a página (ou parte dela) com JavaScript, buscando os dados depois que a página carrega.
 
 ---
 
@@ -531,9 +530,45 @@ Utilize quando:
 
 ---
 
-# CSR — Client-Side Rendering (complemento)
+# CSR — Client-Side Rendering
 
-Mesmo no App Router, algumas partes continuam sendo buscadas **no navegador**, usando Client Components com bibliotecas como React Query.
+No **CSR**, o servidor envia um HTML "casco" (quase vazio) e o **navegador** executa o JavaScript, busca os dados na API e monta a interface. É o modelo clássico das SPAs em React.
+
+```
+Visitante acessa a página
+
+        │
+
+        ▼
+
+Servidor envia HTML mínimo
+
++ bundle JavaScript
+
+        │
+
+        ▼
+
+Navegador baixa e executa o JS
+
+        │
+
+        ▼
+
+useEffect / React Query
+
+busca os dados na API
+
+        │
+
+        ▼
+
+Interface é montada
+
+no navegador
+```
+
+No App Router, o CSR acontece dentro de **Client Components** (`"use client"`), geralmente com React Query ou `useEffect`.
 
 ```typescript
 "use client";
@@ -542,18 +577,120 @@ import { useQuery } from "@tanstack/react-query";
 
 export default function EstoqueAoVivo({ produtoId }: { produtoId: string }) {
 
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["estoque", produtoId],
     queryFn: () => buscarEstoque(produtoId),
     refetchInterval: 10_000,
   });
+
+  if (isLoading) return <span>Carregando...</span>;
 
   return <span>Em estoque: {data?.quantidade}</span>;
 
 }
 ```
 
-É comum combinar: a página principal em **SSG/ISR** (rápida), com pequenos trechos em **CSR** para dados em tempo real ou específicos do usuário.
+O dado é buscado **depois** que a página já carregou, e atualizado a cada 10 segundos, sem recarregar nada.
+
+---
+
+# CSR puro x CSR dentro do Next.js
+
+Mesmo com `"use client"`, o Next.js ainda **pré-renderiza** o Client Component no servidor (HTML inicial) e depois o hidrata no navegador. O que caracteriza o CSR é **onde os dados são buscados**: no navegador, depois do carregamento.
+
+Para trechos que dependem de APIs do navegador (`window`, `localStorage`) e **não devem** ser renderizados no servidor, é possível desativar o SSR do componente:
+
+```typescript
+import dynamic from "next/dynamic";
+
+const MapaInterativo = dynamic(() => import("./MapaInterativo"), {
+  ssr: false,
+  loading: () => <p>Carregando mapa...</p>,
+});
+```
+
+Aqui, o `dynamic` com `ssr: false` aplica o conceito de **Lazy Loading** visto anteriormente: o componente só é carregado e renderizado no navegador.
+
+---
+
+# Vantagens e limitações do CSR
+
+**Vantagens:**
+
+- ótimo para **interatividade** e dados em tempo real (dashboards, chats, filtros dinâmicos);
+- permite conteúdo **personalizado por usuário** sem exigir renderização no servidor;
+- após o carregamento inicial, **navegações e atualizações são rápidas**, sem recarregar a página;
+- reduz a carga do servidor de renderização (o trabalho fica no navegador).
+
+**Limitações:**
+
+- o usuário vê um **estado de carregamento** antes do conteúdo real aparecer;
+- **SEO mais limitado**: o conteúdo só existe depois do JavaScript executar, e nem todo rastreador espera por isso;
+- bundle JavaScript maior, impactando dispositivos e conexões mais lentas;
+- risco de **"cascatas" de requisições** (um componente só busca dados depois que o anterior renderizou).
+
+---
+
+# Quando usar CSR?
+
+Utilize quando:
+
+- o conteúdo é **privado e específico do usuário**, sem necessidade de SEO (painéis internos, áreas logadas);
+- os dados **mudam em tempo real** ou com alta frequência (estoque ao vivo, notificações, cotações);
+- o trecho é **altamente interativo** (editores, mapas, gráficos, filtros dinâmicos);
+- depende de **APIs do navegador** (`localStorage`, geolocalização, `window`).
+
+**Evite** para conteúdo público que precisa de SEO e carregamento rápido, como páginas de produto, posts e páginas institucionais.
+
+---
+
+# Combinando estratégias na mesma página
+
+O App Router permite misturar estratégias: a **estrutura** da página vem estática (SSG/ISR) e apenas os trechos vivos ou personalizados são buscados no navegador (CSR).
+
+```typescript
+// app/produtos/[id]/page.tsx  (Server Component, ISR)
+export const revalidate = 300;
+
+export default async function ProdutoPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+
+  const { id } = await params;
+  const produto = await buscarProduto(id);
+
+  return (
+    <div>
+      <h1>{produto.nome}</h1>
+      <p>{produto.descricao}</p>
+
+      {/* trecho em CSR: dado em tempo real */}
+      <EstoqueAoVivo produtoId={id} />
+    </div>
+  );
+
+}
+```
+
+```
+Página do produto
+
+↓
+
+Nome, descrição, imagens
+
+(ISR: rápido, bom para SEO)
+
+↓
+
+Estoque ao vivo
+
+(CSR: sempre atualizado,
+
+dentro da página estática)
+```
 
 ---
 
@@ -706,6 +843,20 @@ SSR (depende de cookies/sessão)
 
 ---
 
+# SSR x CSR
+
+É comum confundir os dois, já que ambos lidam com dados dinâmicos.
+
+| SSR | CSR |
+|-----------|----------|
+| O **servidor** busca os dados e gera o HTML | O **navegador** busca os dados e monta a interface |
+| HTML já chega completo ao navegador | HTML chega "vazio" e é preenchido depois |
+| Melhor para SEO e primeira renderização | Pior para SEO; mostra estado de carregamento |
+| Maior custo de servidor | Menor custo de renderização no servidor |
+| Ideal para páginas completas dependentes da requisição | Ideal para trechos interativos e dados em tempo real |
+
+---
+
 # revalidatePath x revalidateTag
 
 | revalidatePath | revalidateTag |
@@ -724,6 +875,10 @@ SSR (depende de cookies/sessão)
 - Use `generateStaticParams` apenas para as rotas **mais importantes**, deixando as demais serem geradas sob demanda.
 - Reserve **SSR** para páginas que dependem de cookies, headers, sessão ou dados em tempo real.
 - Combine estratégias na mesma página: base estática + trechos em **CSR** para dados vivos.
+- Evite CSR para conteúdo público que precisa de SEO; prefira SSG, ISR ou SSR.
+- Em CSR, use React Query (cache, revalidação) em vez de `useEffect` + `fetch` manual.
+- Use `dynamic(..., { ssr: false })` apenas para componentes que dependem do navegador.
+- Evite cascatas de requisições no cliente: busque em paralelo ou mova a busca para o servidor.
 - Nunca use SSG/ISR para conteúdo **personalizado por usuário** (corre o risco de servir dados de uma pessoa para outra).
 - Confirme na documentação da versão do Next.js em uso quais comportamentos de cache são padrão, pois mudaram entre versões.
 - Valide no build (`next build`): a saída indica quais rotas são estáticas, dinâmicas ou ISR.
