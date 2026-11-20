@@ -1,0 +1,14 @@
+@import 'tailwindcss';
+
+/* TailwindCSS 4.x supports CSS layers for better organization */
+@layer base {
+  /* Your base styles here */
+}
+
+@layer components {
+  /* Your component styles here */
+}
+
+@layer utilities {
+  /* Your custom utilities here */
+}
